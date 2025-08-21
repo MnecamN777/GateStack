@@ -93,24 +93,24 @@ services:
     networks:
        - my_network
 
-#elasticsearch:
-#    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
-#    container_name: elasticsearch
-#    environment:
-#      - discovery.type=single-node
-#      - xpack.security.enabled=false
-#      - ES_JAVA_OPTS=-Xms512m -Xmx512m  # Limit heap size for dev
-#    ulimits:
-#      memlock:
-#       soft: -1
-#        hard: -1
-#    mem_limit: 1g
-#    ports:
-#      - "9200:9200"
-#    volumes:
-#      - esdata:/usr/share/elasticsearch/data
-#    networks:
- #     - my_network
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+    container_name: elasticsearch
+    environment:
+       - discovery.type=single-node
+       - xpack.security.enabled=false
+       - ES_JAVA_OPTS=-Xms512m -Xmx512m  # Limit heap size for dev
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 1g
+    ports:
+       - 9200:9200
+    volumes:
+       - esdata:/usr/share/elasticsearch/data
+    networks:
+       - my_network
 
 #logstash:
 #    image: docker.elastic.co/logstash/logstash:8.13.4
@@ -136,8 +136,8 @@ services:
 #    depends_on:
 #      - elasticsearch
 
-#volumes:
-#  esdata:
+volumes:
+  esdata:
 
 
 networks:
