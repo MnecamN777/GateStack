@@ -1,0 +1,145 @@
+version: "3.8"
+services:
+  app1:
+    build: ./app1
+    container_name: app1
+    ports:
+      - 5001:5001
+    networks:
+      - my_network
+  app2:
+    build: ./app2
+    container_name: app2
+    ports:
+      - 5002:5002
+    networks:
+      - my_network
+  app3:
+    build: ./app3
+    container_name: app3
+    ports:
+      - 5003:5003
+    networks:
+      - my_network
+  haproxy:
+    build: ./haproxy
+    container_name: haproxy
+    ports:
+      - 8080:8080
+      - 8404:8404
+    networks:
+      - my_network
+  haproxy_passive:
+    build: ./haproxy_passive
+    container_name: haproxy_passive
+    ports:
+      - 8081:8081
+    networks:
+      - my_network
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - haproxy
+      - haproxy_passive
+    networks:
+      - my_network
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - "./prometheus.yml:/etc/prometheus/prometheus.yml"
+    ports:
+      - 9090:9090
+    networks:
+      - my_network
+  node-exporter:
+    image: prom/node-exporter
+    ports:
+      - 9100:9100
+    networks:
+      - my_network
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+       - 3000:3000
+    depends_on:
+       - prometheus
+    networks:
+       - my_network
+  haproxy-exporter:
+    image: prom/haproxy-exporter
+    container_name: haproxy-exporter
+    ports:
+       - 9101:9101
+    environment:
+       - HAPROXY_STATS_URL=http://haproxy:8404/stats
+    depends_on:
+       - haproxy
+    networks:
+       - my_network
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:latest
+    ports:
+       - 9113:9113
+    command:
+       - "--nginx.scrape-uri=http://nginx:8081/nginx_status"
+    depends_on:
+       - nginx
+    networks:
+       - my_network
+
+elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m  # Limit heap size for dev
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 1g
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    networks:
+      - my_network
+
+logstash:
+    image: docker.elastic.co/logstash/logstash:8.13.4
+    container_name: logstash
+    volumes:
+      - ./logstash:/usr/share/logstash/pipeline
+    ports:
+      - "5000:5000" # TCP input for logs
+    networks:
+      - my_network
+    depends_on:
+      -elasticsearch
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.4
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    networks:
+      - my_network
+    depends_on:
+      - elasticsearch
+
+volumes:
+  esdata:
+
+
+networks:
+  my_network:
+    driver: bridge

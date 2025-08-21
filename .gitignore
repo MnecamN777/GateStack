@@ -1,0 +1,12 @@
+#pyhton
+__pycahce__/
+*.pyc
+*.pyo
+
+#logs
+*.log
+
+#docker
+
+*.env
+docker-compose.override.yml

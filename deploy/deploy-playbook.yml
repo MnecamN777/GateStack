@@ -1,0 +1,17 @@
+- name: Deploy app stack using Docker Compose
+  hosts: vm
+  become: yes
+
+  tasks:
+    - name: Copy app stack to remote host
+      copy:
+        src: ../app_stack/        # Adjust to match your actual local path
+        dest: /opt/app_stack/
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0755"
+
+    - name: Start Docker containers using Docker Compose
+      shell: docker compose up -d
+      args:
+        chdir: /opt/app_stack/
