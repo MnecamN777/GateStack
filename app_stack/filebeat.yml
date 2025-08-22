@@ -23,4 +23,4 @@ filebeat.inputs:
                     container.name: "haproxy_passive"
 
 output.logstash:
-  hosts: ["logstash:5000"]
+  hosts: ["logstash:5044"]

@@ -118,7 +118,8 @@ services:
     volumes:
        - ./logstash:/usr/share/logstash/pipeline
     ports:
-       - 5000:5000 # TCP input for logs
+       - 5000:5000
+       - 5044:5044  # TCP input for logs
     networks:
        - my_network
     depends_on:
