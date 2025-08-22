@@ -1,0 +1,26 @@
+filebeat.inputs:
+  - type: container
+    enabled: true
+    paths:
+      - /var/lib/docker/containers/*/*.log
+    processors:
+      - add_docker_metadata: ~
+      - drop_event:
+          when:
+            not:
+              or:
+                - contains:
+                    container.name: "app1"
+                - contains:
+                    container.name: "app2"
+                - contains:
+                    container.name: "app3"
+                - contains:
+                    container.name: "nginx"
+                - contains:
+                    container.name: "haproxy"
+                - contains:
+                    container.name: "haproxy_passive"
+
+output.logstash:
+  hosts: ["logstash:5000"]
