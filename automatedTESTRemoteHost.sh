@@ -37,5 +37,6 @@ test_curl "External App3 via NGINX"      https://10.0.3.20/app3/
 test_curl "HTTPS to NGINX"               https://10.0.3.20/
 #test_curl "HTTPS to App3"                https://10.0.3.20/app3/
 test_curl "HAProxy direct port"          http://10.0.3.20:8080/
+test curl "HAProxy passive direct"       http://10.0.3.20:8081/
 
 echo -e "\n ${GREEN}All tests passed!${NC}"
