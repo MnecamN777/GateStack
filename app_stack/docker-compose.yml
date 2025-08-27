@@ -34,6 +34,7 @@ services:
     container_name: haproxy_passive
     ports:
       - 8081:8081
+      - 8403:8403
     networks:
       - my_network
   nginx:
@@ -79,6 +80,7 @@ services:
        - 9101:9101
     environment:
        - HAPROXY_STATS_URL=http://haproxy:8404/stats
+       - HAPROXY_STATS_PASSIVE_URL=http://haproxy_passive:8403/stats
     depends_on:
        - haproxy
     networks:
