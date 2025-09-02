@@ -4,21 +4,21 @@ services:
     build: ./app1
     container_name: app1
     ports:
-      - 5001:5001
+#      - 5001:5001
     networks:
       - my_network
   app2:
     build: ./app2
     container_name: app2
     ports:
-      - 5002:5002
+#      - 5002:5002
     networks:
       - my_network
   app3:
     build: ./app3
     container_name: app3
     ports:
-      - 5003:5003
+#      - 5003:5003
     networks:
       - my_network
   haproxy:
